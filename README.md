@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @Recycle-IT-CIC
 - 👀 I’m interested in Computer recycling and digital inclusion 
-- 🌱 I’m currently learning ...how to runa sucsessfull social enterprise
+- 🌱 I’m currently learning ...how to run a sucsessfull social enterprise
 - 💞️ I’m looking to collaborate on ...digital projects
 - 📫 How to reach me ...recycle.it.cic@gmail.com
 
