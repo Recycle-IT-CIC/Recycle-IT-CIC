@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Assets - Recycle IT{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Assets</h1>
+      <p class="text-muted mb-0">Search and monitor donated equipment as it moves through the refurbishment pipeline.</p>
+    </div>
+    <a class="btn btn-success" href="{{ url_for('main.asset_create') }}">
+      <span class="me-2">➕</span> Log new asset
+    </a>
+  </div>
+
+  <form class="card card-body shadow-sm mb-4" method="get">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label" for="status">Status</label>
+        <select class="form-select" id="status" name="status">
+          <option value="">All statuses</option>
+          {% for status, label in STATUS_CHOICES %}
+            <option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="donor">Donor</label>
+        <select class="form-select" id="donor" name="donor">
+          <option value="">All donors</option>
+          {% for donor in donors %}
+            <option value="{{ donor.id }}" {% if selected_donor and donor.id == selected_donor|int %}selected{% endif %}>{{ donor.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="q">Search</label>
+        <div class="input-group">
+          <input class="form-control" id="q" name="q" placeholder="Search tag, brand, model or serial" type="search" value="{{ search }}" />
+          <button class="btn btn-outline-success" type="submit">Filter</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="table-responsive shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Tag</th>
+          <th scope="col">Type</th>
+          <th scope="col">Status</th>
+          <th scope="col">Donor</th>
+          <th scope="col">Recipient</th>
+          <th scope="col">Updated</th>
+          <th scope="col" class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for asset in assets %}
+          <tr>
+            <td class="fw-semibold">{{ asset.tag }}</td>
+            <td>{{ asset.asset_type }}</td>
+            <td>
+              <span class="badge bg-success-subtle text-success-emphasis">{{ asset.status_label }}</span>
+            </td>
+            <td>{{ asset.donor.name if asset.donor else '—' }}</td>
+            <td>{{ asset.recipient.name if asset.recipient else '—' }}</td>
+            <td>{{ asset.updated_at.strftime('%d %b %Y') if asset.updated_at else '—' }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-success" href="{{ url_for('main.asset_detail', asset_id=asset.id) }}">View</a>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td class="text-center text-muted" colspan="7">No assets match your filters yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

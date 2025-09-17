@@ -1,0 +1,48 @@
+body {
+  background-color: #f5f7f4;
+}
+
+.navbar .navbar-brand {
+  letter-spacing: 0.5px;
+}
+
+.summary-card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1.2rem rgba(25, 135, 84, 0.08);
+}
+
+.pipeline-tile {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.badge.bg-success-subtle {
+  background-color: rgba(25, 135, 84, 0.15) !important;
+  color: #196f3d !important;
+}
+
+.btn-success,
+.btn-outline-success {
+  border-radius: 999px;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.85rem;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.card-header {
+  border-radius: 1rem 1rem 0 0 !important;
+}
+
+textarea {
+  resize: vertical;
+}
