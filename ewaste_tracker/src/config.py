@@ -110,7 +110,15 @@ DATA_WIPE_METHODS = [
 ]
 
 # Directory Paths
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Determine base directory intelligently
+_config_path = Path(__file__).resolve()
+if _config_path.parent.name == "src":
+    # We're in src/ subfolder, go up two levels
+    BASE_DIR = _config_path.parent.parent
+else:
+    # We're in root folder, go up one level
+    BASE_DIR = _config_path.parent
+
 INTAKE_LOGS_DIR = BASE_DIR / "intake_logs"
 PHOTO_EVIDENCE_DIR = BASE_DIR / "photo_evidence"
 CERTIFICATES_DIR = BASE_DIR / "certificates"
@@ -118,7 +126,12 @@ REPORTS_DIR = BASE_DIR / "reports"
 
 # Ensure directories exist
 for directory in [INTAKE_LOGS_DIR, PHOTO_EVIDENCE_DIR, CERTIFICATES_DIR, REPORTS_DIR]:
-    directory.mkdir(parents=True, exist_ok=True)
+    try:
+        directory.mkdir(parents=True, exist_ok=True)
+    except PermissionError:
+        print(f"Warning: Cannot create directory {directory}. Please check permissions.")
+        print(f"Current BASE_DIR: {BASE_DIR}")
+        raise
 
 # Date Formats
 DATE_FORMAT = "%d/%m/%Y"
