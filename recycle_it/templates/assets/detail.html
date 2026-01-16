@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Asset {{ asset.tag }} - Recycle IT{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Asset {{ asset.tag }}</h1>
+      <p class="text-muted mb-0">{{ asset.asset_type }} · {{ asset.brand }} {{ asset.model }}</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="{{ url_for('main.asset_list') }}">Back to list</a>
+      <a class="btn btn-success" href="{{ url_for('main.asset_edit', asset_id=asset.id) }}">Edit details</a>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-lg-8">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header bg-white">
+          <h2 class="h6 mb-0">Asset details</h2>
+        </div>
+        <div class="card-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-4">Lifecycle status</dt>
+            <dd class="col-sm-8"><span class="badge bg-success-subtle text-success-emphasis">{{ asset.status_label }}</span></dd>
+
+            <dt class="col-sm-4">Condition</dt>
+            <dd class="col-sm-8">{{ asset.condition or 'Not specified' }}</dd>
+
+            <dt class="col-sm-4">Location</dt>
+            <dd class="col-sm-8">{{ asset.location or 'Unknown' }}</dd>
+
+            <dt class="col-sm-4">Weight</dt>
+            <dd class="col-sm-8">{{ asset.weight_kg ~ ' kg' if asset.weight_kg else 'Not recorded' }}</dd>
+
+            <dt class="col-sm-4">Serial number</dt>
+            <dd class="col-sm-8">{{ asset.serial_number or 'Not recorded' }}</dd>
+
+            <dt class="col-sm-4">Donor</dt>
+            <dd class="col-sm-8">{{ asset.donor.name if asset.donor else 'Not recorded' }}</dd>
+
+            <dt class="col-sm-4">Recipient</dt>
+            <dd class="col-sm-8">{{ asset.recipient.name if asset.recipient else 'Not yet assigned' }}</dd>
+
+            <dt class="col-sm-4">Acquired</dt>
+            <dd class="col-sm-8">{{ asset.acquired_date.strftime('%d %b %Y') if asset.acquired_date else 'Not recorded' }}</dd>
+
+            <dt class="col-sm-4">Notes</dt>
+            <dd class="col-sm-8">{{ asset.notes or '—' }}</dd>
+
+            <dt class="col-sm-4">Created</dt>
+            <dd class="col-sm-8">{{ asset.created_at.strftime('%d %b %Y %H:%M') }}</dd>
+
+            <dt class="col-sm-4">Last updated</dt>
+            <dd class="col-sm-8">{{ asset.updated_at.strftime('%d %b %Y %H:%M') }}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header bg-white">
+          <h2 class="h6 mb-0">Update status</h2>
+        </div>
+        <form method="post" action="{{ url_for('main.asset_update_status', asset_id=asset.id) }}">
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label" for="status">New status</label>
+              <select class="form-select" id="status" name="status">
+                {% for value, label in STATUS_CHOICES %}
+                  <option value="{{ value }}" {% if asset.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="location">Location</label>
+              <input class="form-control" id="location" name="location" placeholder="e.g. Workshop bench" type="text" value="{{ asset.location or '' }}" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="recipient_id">Recipient</label>
+              <select class="form-select" id="recipient_id" name="recipient_id">
+                <option value="">-- None --</option>
+                {% for recipient in recipients %}
+                  <option value="{{ recipient.id }}" {% if asset.recipient_id == recipient.id %}selected{% endif %}>{{ recipient.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="note">Progress note</label>
+              <textarea class="form-control" id="note" name="note" rows="2" placeholder="Add helpful context for the team"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="recorded_by">Updated by</label>
+              <input class="form-control" id="recorded_by" name="recorded_by" placeholder="Team member name" type="text" />
+            </div>
+          </div>
+          <div class="card-footer text-end">
+            <button class="btn btn-success" type="submit">Update status</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-white">
+      <h2 class="h6 mb-0">Activity history</h2>
+    </div>
+    <div class="card-body p-0">
+      {% if asset.logs %}
+        <div class="table-responsive">
+          <table class="table mb-0 table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Note</th>
+                <th scope="col">Updated by</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for log in asset.logs %}
+                <tr>
+                  <td>{{ log.recorded_at.strftime('%d %b %Y %H:%M') }}</td>
+                  <td>{{ STATUS_LABELS.get(log.status, log.status) }}</td>
+                  <td>{{ log.note or '—' }}</td>
+                  <td>{{ log.recorded_by or '—' }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted mb-0 p-3">No history yet — updates will appear here.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

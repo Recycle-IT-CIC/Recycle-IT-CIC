@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Donors - Recycle IT{% endblock %}
+
+{% block content %}
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+        <div>
+          <h1 class="h3 mb-1">Donor organisations</h1>
+          <p class="text-muted mb-0">Maintain relationships with supporters contributing equipment.</p>
+        </div>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Organisation</th>
+                <th scope="col">Primary contact</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for donor in donors %}
+                <tr>
+                  <td class="fw-semibold">{{ donor.name }}</td>
+                  <td>{{ donor.contact_name or '—' }}</td>
+                  <td>{% if donor.email %}<a href="mailto:{{ donor.email }}">{{ donor.email }}</a>{% else %}—{% endif %}</td>
+                  <td>{{ donor.phone or '—' }}</td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td class="text-center text-muted" colspan="4">No donors recorded yet.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h2 class="h6 mb-0">Add donor</h2>
+        </div>
+        <form class="card-body" method="post">
+          <div class="mb-3">
+            <label class="form-label" for="name">Organisation name *</label>
+            <input class="form-control" id="name" name="name" required type="text" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="contact_name">Primary contact</label>
+            <input class="form-control" id="contact_name" name="contact_name" type="text" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-control" id="email" name="email" type="email" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="phone">Phone</label>
+            <input class="form-control" id="phone" name="phone" type="tel" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="notes">Notes</label>
+            <textarea class="form-control" id="notes" name="notes" rows="2"></textarea>
+          </div>
+          <div class="text-end">
+            <button class="btn btn-success" type="submit">Add donor</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
